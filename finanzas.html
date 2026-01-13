@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finanzas</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h2 {
+            color: #333;
+        }
+        .section {
+            background: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+        button {
+            background: #222;
+            color: white;
+            border: none;
+        }
+        .back {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: #222;
+            text-decoration: none;
+        }
+        ul {
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Finanzas</h2>
+
+<!-- REGISTRAR INGRESO -->
+<div class="section">
+    <h3>Registrar ingreso</h3>
+
+    <input type="date" id="fecha_ing">
+    <input type="text" id="concepto_ing" placeholder="Concepto">
+    <input type="number" id="monto_ing" placeholder="Monto">
+
+    <button onclick="registrarIngreso()">Registrar ingreso</button>
+</div>
+
+<!-- REGISTRAR EGRESO -->
+<div class="section">
+    <h3>Registrar egreso</h3>
+
+    <input type="date" id="fecha_egr">
+    <input type="text" id="concepto_egr" placeholder="Concepto">
+    <input type="number" id="monto_egr" placeholder="Monto">
+
+    <button onclick="registrarEgreso()">Registrar egreso</button>
+</div>
+
+<!-- VER INGRESOS -->
+<div class="section">
+    <h3>Ingresos registrados</h3>
+    <button onclick="verIngresos()">Actualizar lista</button>
+    <ul id="lista_ingresos"></ul>
+</div>
+
+<!-- VER EGRESOS -->
+<div class="section">
+    <h3>Egresos registrados</h3>
+    <button onclick="verEgresos()">Actualizar lista</button>
+    <ul id="lista_egresos"></ul>
+</div>
+
+<!-- BALANCE -->
+<div class="section">
+    <h3>Balance total</h3>
+    <button onclick="verBalance()">Ver balance</button>
+    <p id="balance"></p>
+</div>
+
+<a class="back" href="index.html">← Volver</a>
+
+<script>
+const API = "http://192.168.100.12:8000";  // Cambiar por tu IP real
+
+async function registrarIngreso() {
+    const data = {
+        fecha: document.getElementById("fecha_ing").value,
+        concepto: document.getElementById("concepto_ing").value,
+        monto: parseFloat(document.getElementById("monto_ing").value)
+    };
+
+    const res = await fetch(`${API}/finanzas/ingresos`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+    });
+
+    const json = await res.json();
+    alert(json.mensaje);
+}
+
+async function registrarEgreso() {
+    const data = {
+        fecha: document.getElementById("fecha_egr").value,
+        concepto: document.getElementById("concepto_egr").value,
+        monto: parseFloat(document.getElementById("monto_egr").value)
+    };
+
+    const res = await fetch(`${API}/finanzas/egresos`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+    });
+
+    const json = await res.json();
+    alert(json.mensaje);
+}
+
+async function verIngresos() {
+    const res = await fetch(`${API}/finanzas/ingresos`);
+    const ingresos = await res.json();
+
+    const lista = document.getElementById("lista_ingresos");
+    lista.innerHTML = "";
+
+    ingresos.forEach(i => {
+        const li = document.createElement("li");
+        li.textContent = `${i[1]} — ${i[2]} — $${i[3]}`;
+        lista.appendChild(li);
+    });
+}
+
+async function verEgresos() {
+    const res = await fetch(`${API}/finanzas/egresos`);
+    const egresos = await res.json();
+
+    const lista = document.getElementById("lista_egresos");
+    lista.innerHTML = "";
+
+    egresos.forEach(e => {
+        const li = document.createElement("li");
+        li.textContent = `${e[1]} — ${e[2]} — $${e[3]}`;
+        lista.appendChild(li);
+    });
+}
+
+async function verBalance() {
+    const res = await fetch(`${API}/finanzas/balance`);
+    const data = await res.json();
+
+    document.getElementById("balance").textContent = `Balance total: $${data.balance_total}`;
+}
+</script>
+
+</body>
+</html>

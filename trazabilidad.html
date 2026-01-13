@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trazabilidad</title>
+</head>
+<body>
+
+<h2>Registrar trabajo</h2>
+
+<form id="form">
+    <input type="date" id="fecha"><br><br>
+    <input type="text" id="lote" placeholder="Lote"><br><br>
+    <input type="text" id="tarea" placeholder="Tarea"><br><br>
+    <input type="number" id="volumen" placeholder="Volumen"><br><br>
+    <input type="text" id="notas" placeholder="Notas"><br><br>
+
+    <button type="submit">Guardar</button>
+</form>
+
+<script>
+document.getElementById("form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const data = {
+        fecha: document.getElementById("fecha").value,
+        lote: document.getElementById("lote").value,
+        tarea: document.getElementById("tarea").value,
+        volumen: parseFloat(document.getElementById("volumen").value),
+        notas: document.getElementById("notas").value
+    };
+
+    const res = await fetch("http://127.0.0.1:8000/trabajos", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+    });
+
+    const json = await res.json();
+    alert(json.mensaje);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Pino Negro ERP</title>
+
+    <!-- RUTA ABSOLUTA: siempre funciona -->
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+
+            <!-- RUTA ABSOLUTA PARA EL LOGO -->
+            <img src="/img/logo.png" alt="Pino Negro Logo" class="logo">
+
+            <h2>Bienvenido</h2>
+
+            <form id="loginForm">
+                <input type="text" id="usuario" placeholder="Usuario" required>
+                <input type="password" id="password" placeholder="Contraseña" required>
+                <button type="submit">Entrar</button>
+            </form>
+
+            <p id="mensaje"></p>
+        </div>
+    </div>
+
+    <!-- RUTA ABSOLUTA PARA EL JS -->
+    <script src="/js/login.js"></script>
+</body>
+</html>
