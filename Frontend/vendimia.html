@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendimia - Pino Negro</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Arial", sans-serif;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Fondo con imagen elegida por vos */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("img\IMG_2155.JPEG"); /* ← Cambiar por tu imagen */
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.45);
+            z-index: -1;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            color: white;
+            font-size: 16px;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid white;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-top: 20px;
+            font-size: 38px;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(0,0,0,0.6);
+        }
+
+        .menu {
+            margin-top: 40px;
+            padding: 0 20px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            margin: 12px 0;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            text-align: center;
+            border-radius: 10px;
+            font-size: 20px;
+            text-decoration: none;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.3);
+            transition: 0.25s;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.28);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background"></div>
+
+    <div class="topbar">
+        <span id="usuarioLogueado"></span>
+        <button class="logout-btn" onclick="logout()">Cerrar sesión</button>
+    </div>
+
+    <h1>Vendimia</h1>
+
+    <div class="menu">
+        <a class="btn" href="vendimia_dashboard.html">Dashboard</a>
+        <a class="btn" href="vendimia_ingreso.html">Ingreso de Uva</a>
+        <a class="btn" href="vendimia_muestras.html">Muestras</a>
+        <a class="btn" href="vendimia_destino.html">Destino</a>
+    </div>
+
+    <script>
+        // Mostrar usuario logueado
+        document.getElementById("usuarioLogueado").innerText =
+            localStorage.getItem("usuario");
+
+        // Logout
+        function logout() {
+            localStorage.removeItem("logueado");
+            localStorage.removeItem("usuario");
+            localStorage.removeItem("rol");
+            window.location.href = "login.html";
+        }
+    </script>
+
+</body>
+</html>

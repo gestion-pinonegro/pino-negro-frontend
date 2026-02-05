@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h2 {
+            color: #333;
+        }
+        .section {
+            background: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+        button {
+            background: #222;
+            color: white;
+            border: none;
+        }
+        .back {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: #222;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Inventario</h2>
+
+<!-- CREAR ITEM -->
+<div class="section">
+    <h3>Crear ítem</h3>
+
+    <input type="text" id="nombre" placeholder="Nombre del ítem">
+    <input type="text" id="unidad" placeholder="Unidad (ej: unidades, kg, litros)">
+    <input type="number" id="stock" placeholder="Stock inicial">
+
+    <button onclick="crearItem()">Crear ítem</button>
+</div>
+
+<!-- REGISTRAR MOVIMIENTO -->
+<div class="section">
+    <h3>Registrar movimiento</h3>
+
+    <input type="number" id="item_id" placeholder="ID del ítem">
+    <select id="tipo">
+        <option value="ingreso">Ingreso</option>
+        <option value="egreso">Egreso</option>
+    </select>
+    <input type="number" id="cantidad" placeholder="Cantidad">
+    <input type="date" id="fecha_mov">
+
+    <button onclick="registrarMovimiento()">Registrar movimiento</button>
+</div>
+
+<!-- VER ITEMS -->
+<div class="section">
+    <h3>Items registrados</h3>
+    <button onclick="verItems()">Actualizar lista</button>
+    <ul id="lista_items"></ul>
+</div>
+
+<a class="back" href="index.html">← Volver</a>
+
+<script>
+const API = "http://192.168.100.12:8000";  // Cambiar por tu IP real
+
+async function crearItem() {
+    const data = {
+        nombre: document.getElementById("nombre").value,
+        unidad: document.getElementById("unidad").value,
+        stock_inicial: parseFloat(document.getElementById("stock").value)
+    };
+
+    const res = await fetch(`${API}/inventario/items`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+    });
+
+    const json = await res.json();
+    alert(json.mensaje);
+}
+
+async function registrarMovimiento() {
+    const data = {
+        item_id: parseInt(document.getElementById("item_id").value),
+        tipo: document.getElementById("tipo").value,
+        cantidad: parseFloat(document.getElementById("cantidad").value),
+        fecha: document.getElementById("fecha_mov").value
+    };
+
+    const res = await fetch(`${API}/inventario/movimientos`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+    });
+
+    const json = await res.json();
+    alert(json.mensaje);
+}
+
+async function verItems() {
+    const res = await fetch(`${API}/inventario/items`);
+    const items = await res.json();
+
+    const lista = document.getElementById("lista_items");
+    lista.innerHTML = "";
+
+    items.forEach(i => {
+        const li = document.createElement("li");
+        li.textContent = `ID ${i[0]} — ${i[1]} (${i[2]}) — Stock: ${i[3]}`;
+        lista.appendChild(li);
+    });
+}
+</script>
+
+</body>
+</html>

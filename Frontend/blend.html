@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blends</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h2 {
+            color: #333;
+        }
+        .section {
+            background: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+        button {
+            background: #222;
+            color: white;
+            border: none;
+        }
+        .back {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: #222;
+            text-decoration: none;
+        }
+        ul {
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Blends</h2>
+
+<!-- CREAR BLEND -->
+<div class="section">
+    <h3>Crear blend</h3>
+
+    <input type="text" id="nombre_blend" placeholder="Nombre del blend">
+    <input type="date" id="fecha_blend">
+
+    <button onclick="crearBlend()">Crear blend</button>
+</div>
+
+<!-- AGREGAR COMPONENTE -->
+<div class="section">
+    <h3>Agregar componente</h3>
+
+    <input type="number" id="blend_id" placeholder="ID del blend">
+    <input type="text" id="varietal" placeholder="Varietal (ej: Malbec)">
+    <input type="number" id="volumen" placeholder="Volumen (litros)">
+
+    <button onclick="agregarComponente()">Agregar componente</button>
+</div>
+
+<!-- VER BLENDS -->
+<div class="section">
+    <h3>Blends registrados</h3>
+    <button onclick="verBlends()">Actualizar lista</button>
+    <ul id="lista_blends"></ul>
+</div>
+
+<!-- VER COMPOSICIÓN -->
+<div class="section">
+    <h3>Ver composición</h3>
+
+    <input type="number" id="blend_id_comp" placeholder="ID del blend">
+
+    <button onclick="verComposicion()">Ver composición</button>
+
+    <ul id="lista_composicion"></ul>
+</div>
+
+<a class="back" href="index.html">← Volver</a>
+
+<script>
+const API = "http://192.168.100.12:8000";  // Cambiar por tu IP real
+
+async function crearBlend() {
+    const data = {
+        nombre: document.getElementById("nombre_blend").value,
+        fecha: document.getElementById("fecha_blend").value
+    };
+
+    const res = await fetch(`${API}/blends`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+    });
+
+    const json = await res.json();
+    alert(json.mensaje);
+}
+
+async function agregarComponente() {
+    const data = {
+        blend_id: parseInt(document.getElementById("blend_id").value),
+        varietal: document.getElementById("varietal").value,
+        volumen: parseFloat(document.getElementById("volumen").value)
+    };
+
+    const res = await fetch(`${API}/blends/componentes`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+    });
+
+    const json = await res.json();
+    alert(json.mensaje);
+}
+
+async function verBlends() {
+    const res = await fetch(`${API}/blends`);
+    const blends = await res.json();
+
+    const lista = document.getElementById("lista_blends");
+    lista.innerHTML = "";
+
+    blends.forEach(b => {
+        const li = document.createElement("li");
+        li.textContent = `ID ${b[0]} — ${b[1]} — Fecha: ${b[2]}`;
+        lista.appendChild(li);
+    });
+}
+
+async function verComposicion() {
+    const id = parseInt(document.getElementById("blend_id_comp").value);
+
+    const res = await fetch(`${API}/blends/${id}/composicion`);
+    const comp = await res.json();
+
+    const lista = document.getElementById("lista_composicion");
+    lista.innerHTML = "";
+
+    comp.forEach(c => {
+        const li = document.createElement("li");
+        li.textContent = `${c[0]} — ${c[1]} L (${c[2].toFixed(2)}%)`;
+        lista.appendChild(li);
+    });
+}
+</script>
+
+</body>
+</html>
